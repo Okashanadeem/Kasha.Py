@@ -3,15 +3,25 @@
 import { client } from '@/sanity/lib/client'
 import CodeBlock from '@/app/myComponents/CodeBlock'
 import Link from 'next/link'
-import { type Metadata } from 'next'
+import { type Metadata, type ResolvingMetadata } from 'next'
 
-// -------- Types --------
-interface Props {
-  params: {
-    slug: string
+// ✅ Correctly typed for App Router
+type PageProps = {
+  params: { slug: string }
+}
+
+// Fetch project metadata (optional for SEO)
+export async function generateMetadata(
+  { params }: { params: { slug: string } }
+): Promise<Metadata> {
+  return {
+    title: `KashaPy – ${params.slug}`,
+    description: `Explore the ${params.slug} project.`,
   }
 }
 
+
+// Project type from Sanity
 interface Project {
   title: string
   description: string
@@ -22,16 +32,8 @@ interface Project {
   }
 }
 
-// -------- Optional: Metadata --------
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  return {
-    title: `KashaPy – ${params.slug}`,
-    description: `Detailed view of ${params.slug} project.`,
-  }
-}
-
-// -------- Page Component --------
-export default async function ProjectPage({ params }: Props) {
+// ✅ Page component with proper props
+export default async function ProjectPage({ params }: PageProps) {
   const project: Project = await client.fetch(
     `*[_type == "project" && slug.current == $slug][0]`,
     { slug: params.slug }
