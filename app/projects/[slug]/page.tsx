@@ -1,6 +1,16 @@
+// app/projects/[slug]/page.tsx
+
 import { client } from '@/sanity/lib/client'
 import CodeBlock from '@/app/myComponents/CodeBlock'
 import Link from 'next/link'
+import { type Metadata } from 'next'
+
+// -------- Types --------
+interface Props {
+  params: {
+    slug: string
+  }
+}
 
 interface Project {
   title: string
@@ -12,7 +22,16 @@ interface Project {
   }
 }
 
-export default async function ProjectPage({ params }: { params: { slug: string } }) {
+// -------- Optional: Metadata --------
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  return {
+    title: `KashaPy – ${params.slug}`,
+    description: `Detailed view of ${params.slug} project.`,
+  }
+}
+
+// -------- Page Component --------
+export default async function ProjectPage({ params }: Props) {
   const project: Project = await client.fetch(
     `*[_type == "project" && slug.current == $slug][0]`,
     { slug: params.slug }
@@ -27,21 +46,24 @@ export default async function ProjectPage({ params }: { params: { slug: string }
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 md:px-6 py-12 text-white font-mono">
-      {/* Back Button */}
-      <Link
-        href="/"
-        className="text-cyan-400 hover:underline text-sm mb-4 inline-block"
-      >
-        ← Back to Projects
-      </Link>
+    <div className="max-w-4xl mx-auto px-6 py-12 text-white font-mono">
+      {/* Back Link */}
+      <div className="mb-6">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 transition"
+        >
+          <span className="text-lg">←</span> Back to Projects
+        </Link>
+      </div>
 
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 md:p-8 space-y-6 shadow-lg">
-        <h1 className="text-2xl md:text-4xl font-bold text-cyan-400 leading-tight">
+      {/* Project Card */}
+      <div className="bg-gray-950 border border-gray-800 p-8 rounded-2xl shadow-xl space-y-6">
+        <h1 className="text-3xl font-bold text-cyan-400 tracking-tight">
           {project.title}
         </h1>
 
-        <p className="text-gray-300 text-sm md:text-base leading-relaxed">
+        <p className="text-gray-300 leading-relaxed text-sm">
           {project.description}
         </p>
 
@@ -58,7 +80,7 @@ export default async function ProjectPage({ params }: { params: { slug: string }
               href={project.demoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block bg-cyan-600 hover:bg-cyan-700 text-white font-semibold px-6 py-2 rounded-md shadow hover:shadow-cyan-500/30 transition"
+              className="inline-block bg-cyan-600 hover:bg-cyan-700 text-white font-semibold px-6 py-2 rounded-md shadow transition"
             >
               🚀 Live Demo
             </a>
