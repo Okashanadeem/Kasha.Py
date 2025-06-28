@@ -5,12 +5,8 @@ import CodeBlock from '@/app/myComponents/CodeBlock'
 import Link from 'next/link'
 import { type Metadata } from 'next'
 
-type PageProps = {
-  params: { slug: string }
-}
-
 export async function generateMetadata(
-  { params }: PageProps
+  { params }: { params: { slug: string } }
 ): Promise<Metadata> {
   return {
     title: `KashaPy – ${params.slug}`,
@@ -26,7 +22,11 @@ interface Project {
   slug: { current: string }
 }
 
-export default async function ProjectPage({ params }: PageProps) {
+export default async function ProjectPage({
+  params,
+}: {
+  params: { slug: string }
+}) {
   const project: Project = await client.fetch(
     `*[_type == "project" && slug.current == $slug][0]`,
     { slug: params.slug }
