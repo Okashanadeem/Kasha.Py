@@ -3,16 +3,14 @@
 import { client } from '@/sanity/lib/client'
 import CodeBlock from '@/app/myComponents/CodeBlock'
 import Link from 'next/link'
-import { type Metadata, type ResolvingMetadata } from 'next'
+import { type Metadata } from 'next'
 
-// ✅ Correctly typed for App Router
 type PageProps = {
   params: { slug: string }
 }
 
-// Fetch project metadata (optional for SEO)
 export async function generateMetadata(
-  { params }: { params: { slug: string } }
+  { params }: PageProps
 ): Promise<Metadata> {
   return {
     title: `KashaPy – ${params.slug}`,
@@ -20,19 +18,14 @@ export async function generateMetadata(
   }
 }
 
-
-// Project type from Sanity
 interface Project {
   title: string
   description: string
   code: string
   demoUrl?: string
-  slug: {
-    current: string
-  }
+  slug: { current: string }
 }
 
-// ✅ Page component with proper props
 export default async function ProjectPage({ params }: PageProps) {
   const project: Project = await client.fetch(
     `*[_type == "project" && slug.current == $slug][0]`,
@@ -49,7 +42,6 @@ export default async function ProjectPage({ params }: PageProps) {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12 text-white font-mono">
-      {/* Back Link */}
       <div className="mb-6">
         <Link
           href="/"
@@ -59,7 +51,6 @@ export default async function ProjectPage({ params }: PageProps) {
         </Link>
       </div>
 
-      {/* Project Card */}
       <div className="bg-gray-950 border border-gray-800 p-8 rounded-2xl shadow-xl space-y-6">
         <h1 className="text-3xl font-bold text-cyan-400 tracking-tight">
           {project.title}
