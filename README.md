@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+```markdown
+# 🧠 KashaPy
 
-## Getting Started
+**KashaPy** is a modern Python project portfolio site designed to showcase your work with style and functionality. Built with **Next.js**, **Sanity.io**, and **Tailwind CSS**, it features dynamic routing, a dark tech-themed UI, and an integrated Python code playground.
 
-First, run the development server:
+![KashaPy Screenshot](https://okashadev.vercel.app/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fyr2mb272%2Fproduction%2F19c3a4903139178ea02fb477b82f98ec9dd3db4f-1120x1120.jpg&w=1920&q=75)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🌐 Live Demo
+
+🔗 [https://kasha-py.vercel.app](https://kasha-py.vercel.app)
+
+---
+
+## 🚀 Features
+
+- ⚡ **Next.js App Router** with dynamic routing
+- 🎨 **Modern UI** built with Tailwind CSS and Google Fonts
+- 🧩 **Sanity CMS** integration for managing project data
+- 🧠 **Python Playground** with real-time code execution via Piston API
+- 💻 **Syntax-highlighted code viewer**
+- 🔗 Optional **Live Demo links** for each project
+- 📱 Fully **responsive design**
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend**: [Next.js](https://nextjs.org/) (App Router)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **CMS**: [Sanity.io](https://www.sanity.io/)
+- **Code Execution**: [Piston API](https://github.com/engineer-man/piston)
+
+---
+
+## 📁 Folder Structure
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+app/
+│
+├── page.tsx               # Home page showing project list
+├── playground/            # Python playground with code editor & output
+├── projects/\[slug]/       # Dynamic route for each project detail
+├── myComponents/          # Reusable components like CodeBlock
+├── globals.css            # Tailwind and custom styles
+└── layout.tsx             # Root layout and header
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+````
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🔧 Local Setup
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone the repo**:
+   ```bash
+   git clone https://github.com/yourusername/kashapy.git
+   cd kashapy
+````
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Install dependencies**:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   npm install
+   ```
 
-## Deploy on Vercel
+3. **Configure Sanity**:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   * Create a new project at [sanity.io](https://www.sanity.io/).
+   * Set up schemas for `project` with fields like `title`, `description`, `code`, `slug`, and `demoUrl`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Add Environment Variables**:
+   Create a `.env.local` file:
+
+   ```env
+   NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
+   NEXT_PUBLIC_SANITY_DATASET=production
+   ```
+
+5. **Run the dev server**:
+
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## 📸 Screenshots
+
+* **Project Accordion View**
+* **Project Detail with CodeBlock**
+* **Python Playground**
+
+---
+
+## 📄 License
+
+This project is open-source and available under the [MIT License](LICENSE).
+
+---
+
+## 🙌 Author
+
+Made with ❤️ by [Okasha Khan](https://github.com/Okashanadeem)
+

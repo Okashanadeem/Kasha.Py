@@ -36,7 +36,7 @@ export default function RootLayout({
               href="/"
               className="text-cyan-400 text-xl font-semibold tracking-tight hover:text-white transition"
             >
-              🧠 KashaPy
+              🧠 Kasha.Py
             </Link>
 
             {/* Playground Button */}
