@@ -1,7 +1,9 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
-import Link from "next/link"
 import "./globals.css"
+import Navbar from "./myComponents/Navbar"
+import TransitionOverlay from "./myComponents/TransitionOverlay"
+import Footer from "./myComponents/footer"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,29 +30,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} bg-black text-white antialiased`}
       >
-        {/* Header */}
-        <header className="w-full border-b border-gray-800 bg-gray-950 px-6 py-4">
-          <div className="max-w-6xl mx-auto flex items-center justify-between">
-            {/* Logo/Title */}
-            <Link
-              href="/"
-              className="text-cyan-400 text-xl font-semibold tracking-tight hover:text-white transition"
-            >
-              🧠 Kasha.Py
-            </Link>
+                <TransitionOverlay/>
+                
+        <Navbar/>
 
-            {/* Playground Button */}
-            <Link
-              href="/playground"
-              className="text-sm font-mono bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-md shadow transition-all duration-200"
-            >
-              ▶️ Playground
-            </Link>
-          </div>
-        </header>
+
 
         {/* Main Content */}
         <main className="min-h-screen">{children}</main>
+
+        <Footer />
       </body>
     </html>
   )

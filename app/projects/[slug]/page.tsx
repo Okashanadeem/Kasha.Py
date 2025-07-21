@@ -1,4 +1,4 @@
-// app/projects/[slug]/page.tsx
+// app/project/[slug]/page.tsx
 
 import { client } from '@/sanity/lib/client'
 import CodeBlock from '@/app/myComponents/CodeBlock'
@@ -7,12 +7,11 @@ import type { Metadata } from 'next'
 
 // Optional SEO metadata
 export async function generateMetadata(
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: { slug: string } }
 ): Promise<Metadata> {
-  const { slug } = await params
   return {
-    title: `KashaPy – ${slug}`,
-    description: `Explore the ${slug} project.`,
+    title: `KashaPy – ${params.slug}`,
+    description: `Explore the ${params.slug} project.`,
   }
 }
 
@@ -27,17 +26,15 @@ interface Project {
   }
 }
 
-// ✅ Entry component — params is now a Promise in Next.js 15
-export default async function ProjectPage({
+// ✅ Main page component
+export default async function ProjectSlugPage({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: { slug: string }
 }) {
-  const { slug } = await params
-  
   const project: Project = await client.fetch(
     `*[_type == "project" && slug.current == $slug][0]`,
-    { slug }
+    { slug: params.slug }
   )
 
   if (!project) {
@@ -53,7 +50,7 @@ export default async function ProjectPage({
       {/* Back Link */}
       <div className="mb-6">
         <Link
-          href="/"
+          href="/project"
           className="inline-flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 transition"
         >
           <span className="text-lg">←</span> Back to Projects
