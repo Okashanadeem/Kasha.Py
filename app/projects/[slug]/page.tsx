@@ -1,48 +1,50 @@
-// app/project/[slug]/page.tsx
-
-import { client } from '@/sanity/lib/client'
-import CodeBlock from '@/app/myComponents/CodeBlock'
-import Link from 'next/link'
-import type { Metadata } from 'next'
+import { client } from '@/sanity/lib/client';
+import CodeBlock from '@/app/myComponents/CodeBlock';
+import Link from 'next/link';
+import type { Metadata } from 'next';
 
 // Optional SEO metadata
-export async function generateMetadata(
-  { params }: { params: { slug: string } }
-): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params; // Resolve the params Promise
   return {
-    title: `KashaPy – ${params.slug}`,
-    description: `Explore the ${params.slug} project.`,
-  }
+    title: `KashaPy – ${slug}`,
+    description: `Explore the ${slug} project.`,
+  };
 }
 
 // Sanity project type
 interface Project {
-  title: string
-  description: string
-  code: string
-  demoUrl?: string
+  title: string;
+  description: string;
+  code: string;
+  demoUrl?: string;
   slug: {
-    current: string
-  }
+    current: string;
+  };
 }
 
-// ✅ Main page component
+// Main page component
 export default async function ProjectSlugPage({
   params,
 }: {
-  params: { slug: string }
+  params: Promise<{ slug: string }>;
 }) {
+  const { slug } = await params; // Resolve the params Promise
   const project: Project = await client.fetch(
     `*[_type == "project" && slug.current == $slug][0]`,
-    { slug: params.slug }
-  )
+    { slug }
+  );
 
   if (!project) {
     return (
       <div className="p-10 text-center text-red-400 text-lg font-semibold">
         ❌ Project not found.
       </div>
-    )
+    );
   }
 
   return (
@@ -88,5 +90,5 @@ export default async function ProjectSlugPage({
         )}
       </div>
     </div>
-  )
+  );
 }
