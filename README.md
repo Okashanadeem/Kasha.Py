@@ -1,13 +1,10 @@
-```markdown
 # 🧠 KashaPy
 
 **KashaPy** is a modern Python project portfolio site designed to showcase your work with style and functionality. Built with **Next.js**, **Sanity.io**, and **Tailwind CSS**, it features dynamic routing, a dark tech-themed UI, and an integrated Python code playground.
 
-![KashaPy Screenshot](https://okashadev.vercel.app/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fyr2mb272%2Fproduction%2F19c3a4903139178ea02fb477b82f98ec9dd3db4f-1120x1120.jpg&w=1920&q=75)
-
 ## 🌐 Live Demo
 
-🔗 [https://kasha-py.vercel.app](https://kasha-py.vercel.app)
+🔗 [🧠 KashaPy](https://kasha-py.vercel.app)
 
 ---
 
@@ -32,28 +29,11 @@
 
 ---
 
-## 📁 Folder Structure
-
-```
-
-app/
-│
-├── page.tsx               # Home page showing project list
-├── playground/            # Python playground with code editor & output
-├── projects/\[slug]/       # Dynamic route for each project detail
-├── myComponents/          # Reusable components like CodeBlock
-├── globals.css            # Tailwind and custom styles
-└── layout.tsx             # Root layout and header
-
-````
-
----
-
 ## 🔧 Local Setup
 
 1. **Clone the repo**:
    ```bash
-   git clone https://github.com/yourusername/kashapy.git
+   git clone https://github.com/Okashanadeem/Kasha.Py.git
    cd kashapy
 ````
 
@@ -81,14 +61,6 @@ app/
    ```bash
    npm run dev
    ```
-
----
-
-## 📸 Screenshots
-
-* **Project Accordion View**
-* **Project Detail with CodeBlock**
-* **Python Playground**
 
 ---
 

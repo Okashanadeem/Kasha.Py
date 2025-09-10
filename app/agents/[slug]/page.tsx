@@ -3,9 +3,11 @@
 import { client } from '@/sanity/lib/client'
 import CodeBlock from '@/app/myComponents/CodeBlock'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, use } from 'react'
 import React from 'react'
 import { X } from 'lucide-react'
+import JSZip from 'jszip'
+import { saveAs } from 'file-saver'
 
 interface FileNode {
   name: string
@@ -24,7 +26,7 @@ interface AgentProject {
 }
 
 export default function AgentProjectPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = React.use(params)
+  const { slug } = use(params)
 
   const [project, setProject] = useState<AgentProject | null>(null)
   const [selectedFile, setSelectedFile] = useState<{ name: string; content: string } | null>(null)
@@ -65,10 +67,10 @@ export default function AgentProjectPage({ params }: { params: Promise<{ slug: s
       })
   }, [slug])
 
-  if (project === null) {
+  if (!project) {
     return (
       <div className="min-h-screen bg-black text-white font-mono flex items-center justify-center">
-        Project not found.
+        ❌ Project not found.
       </div>
     )
   }
@@ -78,9 +80,7 @@ export default function AgentProjectPage({ params }: { params: Promise<{ slug: s
 
   const findFileByName = (nodes: FileNode[], name: string): { name: string; content: string } | null => {
     for (const node of nodes) {
-      if (node.type === 'file' && node.name === name) {
-        return { name: node.name, content: node.content ?? '' }
-      }
+      if (node.type === 'file' && node.name === name) return { name: node.name, content: node.content ?? '' }
       if (node.type === 'folder' && node.children) {
         const found = findFileByName(node.children, name)
         if (found) return found
@@ -89,18 +89,41 @@ export default function AgentProjectPage({ params }: { params: Promise<{ slug: s
     return null
   }
 
+  // Recursive function to add files to ZIP
+  const addFilesToZip = (zip: JSZip, nodes: FileNode[], path = '') => {
+    nodes.forEach((node) => {
+      const currentPath = path ? `${path}/${node.name}` : node.name
+      if (node.type === 'file') {
+        zip.file(currentPath, node.content ?? '')
+      } else if (node.type === 'folder' && node.children) {
+        const folder = zip.folder(node.name)!
+        addFilesToZip(folder, node.children, currentPath)
+      }
+    })
+  }
+
+  const handleDownload = () => {
+    const zip = new JSZip()
+    if (codeText.trim().length > 0) {
+      zip.file('main_code.txt', codeText)
+    }
+    if (tree.length > 0) {
+      addFilesToZip(zip, tree)
+    }
+    zip.generateAsync({ type: 'blob' }).then((blob) => saveAs(blob, `${project.title}.zip`))
+  }
+
   return (
     <div className="min-h-screen bg-black text-white font-mono relative">
       {/* Floating Folder Icon */}
       <button
-        onClick={() => setSidebarOpen(prev => !prev)}
+        onClick={() => setSidebarOpen((prev) => !prev)}
         className="fixed bottom-10 right-4 z-30 bg-cyan-600 hover:bg-cyan-700 text-white p-3 rounded-full shadow-2xl opacity-90 backdrop-blur-xl animate-bounce-slow border border-cyan-400/30 md:hidden"
         aria-label="Toggle Folder Structure"
       >
         📁
       </button>
 
-      {/* Overlay (click to close sidebar) */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
@@ -108,7 +131,6 @@ export default function AgentProjectPage({ params }: { params: Promise<{ slug: s
         />
       )}
 
-      {/* Mobile Sidebar (behind navbar) */}
       <div
         className={`fixed top-0 left-0 h-full w-72 bg-gray-900 z-40 p-4 transition-transform transform md:hidden ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -142,13 +164,20 @@ export default function AgentProjectPage({ params }: { params: Promise<{ slug: s
           ← Back to Agents
         </Link>
 
-        <header className="mt-6 mb-8">
-          <h1 className="text-3xl font-bold text-cyan-400">{project.title}</h1>
-          <p className="text-gray-400 mt-2">{project.description}</p>
+        <header className="mt-6 mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-cyan-400">{project.title}</h1>
+            <p className="text-gray-400 mt-2">{project.description}</p>
+          </div>
+          <button
+            onClick={handleDownload}
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-md"
+          >
+            💾 Download Project
+          </button>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Desktop Sidebar */}
           <aside className="hidden lg:block lg:col-span-1 bg-gray-900 border border-gray-800 rounded-xl p-4 max-h-[600px] overflow-auto">
             <h2 className="text-cyan-300 text-lg mb-4 flex items-center gap-2">📁 Structure</h2>
             {tree.length > 0 ? (
@@ -164,7 +193,6 @@ export default function AgentProjectPage({ params }: { params: Promise<{ slug: s
             )}
           </aside>
 
-          {/* Code Viewer */}
           <main className="lg:col-span-3 bg-gray-950 border border-gray-800 rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-cyan-300 text-lg flex items-center gap-2">🔧 Agent Code</h2>
@@ -199,7 +227,7 @@ export default function AgentProjectPage({ params }: { params: Promise<{ slug: s
   )
 }
 
-// Recursive Folder Tree Components
+// Recursive Folder Tree
 function FolderTree({ nodes, onFileClick }: { nodes: FileNode[]; onFileClick: (name: string) => void }) {
   return (
     <ul className="space-y-1">
@@ -210,15 +238,7 @@ function FolderTree({ nodes, onFileClick }: { nodes: FileNode[]; onFileClick: (n
   )
 }
 
-function TreeItem({
-  node,
-  level,
-  onFileClick,
-}: {
-  node: FileNode
-  level: number
-  onFileClick: (name: string) => void
-}) {
+function TreeItem({ node, level, onFileClick }: { node: FileNode; level: number; onFileClick: (name: string) => void }) {
   const padding = level * 16 + 8
   return (
     <li>

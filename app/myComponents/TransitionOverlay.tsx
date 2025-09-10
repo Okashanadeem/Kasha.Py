@@ -1,77 +1,52 @@
 'use client'
 
-import { motion, useAnimation } from 'framer-motion'
-import { useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 const TransitionOverlay = () => {
-  const controls = useAnimation()
   const pathname = usePathname()
+  const [key, setKey] = useState(0)
 
+  // trigger animation on route change
   useEffect(() => {
-    const sequence = async () => {
-      await controls.start('initial')
-      await controls.start('expand')
-      await controls.start('fadeOut')
-    }
-    sequence()
-  }, [pathname, controls])
+    setKey((prev) => prev + 1)
+  }, [pathname])
 
   return (
     <div className="fixed inset-0 z-[999] pointer-events-none flex items-center justify-center">
-      {/* Black Donut (Outer Ring) */}
+      {/* Black Donut */}
       <motion.div
+        key={`black-${key}`}
         className="absolute rounded-full border-[24px] border-black bg-transparent"
-        variants={{
-          initial: { scale: 0, opacity: 0, rotate: 0 },
-          expand: {
-            scale: 35,
-            opacity: 1,
-            rotate: 90,
-            transition: {
-              duration: 1.2,
-              ease: [0.4, 0, 0.2, 1],
-            },
-          },
-          fadeOut: {
-            opacity: 0,
-            transition: {
-              duration: 0.3,
-              ease: 'easeOut',
-            },
-          },
+        initial={{ scale: 0, opacity: 0, rotate: 0 }}
+        animate={{
+          scale: [0, 35, 35],
+          opacity: [0, 1, 0],
+          rotate: [0, 90, 90],
         }}
-        initial="initial"
-        animate={controls}
+        transition={{
+          duration: 1.6,
+          ease: 'easeInOut',
+        }}
         style={{ width: 160, height: 160 }}
       />
 
-      {/* Cyan Donut (Inner Ring) */}
+      {/* Cyan Donut */}
       <motion.div
+        key={`cyan-${key}`}
         className="absolute rounded-full border-[20px] border-cyan-400 bg-transparent mix-blend-difference"
-        variants={{
-          initial: { scale: 0, opacity: 0, rotate: 0 },
-          expand: {
-            scale: 37,
-            opacity: 1,
-            rotate: -90,
-            transition: {
-              duration: 1.4,
-              delay: 0.2,
-              ease: [0.4, 0, 0.2, 1],
-            },
-          },
-          fadeOut: {
-            opacity: 0,
-            transition: {
-              duration: 0.3,
-              delay: 0.1,
-              ease: 'easeOut',
-            },
-          },
+        initial={{ scale: 0, opacity: 0, rotate: 0 }}
+        animate={{
+          scale: [0, 37, 37],
+          opacity: [0, 1, 0],
+          rotate: [0, -90, -90],
         }}
-        initial="initial"
-        animate={controls}
+        transition={{
+          duration: 1.8,
+          ease: 'easeInOut',
+          delay: 0.1,
+        }}
         style={{ width: 140, height: 140 }}
       />
     </div>
